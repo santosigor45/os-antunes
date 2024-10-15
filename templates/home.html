@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Ordem de Serviço Antunes
+{% endblock %}
+
+{% block content %}
+    {% include 'flash.html' %}
+    <div class="container" style="padding: 10px;">
+        <div class="div-menu">
+            <p class="messages" id="welcome_message">{{ current_user.username|upper }}!</p>
+            <p class="messages">Selecione abaixo a opção desejada:</p>
+            <div class="div-submenu" style="margin-right: 5px; margin-bottom: 10px;">
+                <a href="{{ url_for('views.cadastrar_os')}}" class="div-menu-item">
+                    <img src="{{ url_for('static', filename='images/os.png')}}" style="max-width: 80%; height: auto;  margin-bottom: 10px;  filter: drop-shadow(5px 10px 5px gray); " alt="cadastrar_os" />
+                    <p class="div-submenu-text">Cadastrar OS</p>
+                </a>
+            </div>
+<!--            <div class="div-submenu" style="margin-right: 5px;">-->
+<!--                <a href="{{ url_for('views.pesquisar')}}" class="div-menu-item">-->
+<!--                    <img src="{{ url_for('static', filename='images/pesquisar.png')}}" style="max-width: 80%; height: auto;  margin-bottom: 10px;  filter: drop-shadow(5px 10px 5px gray); " alt="icone_pesquisar" />-->
+<!--                    <p class="div-submenu-text">Histórico</p>-->
+<!--                </a>-->
+<!--            </div>-->
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then((registration) => {
+                    console.log('Service Worker registrado com sucesso:', registration);
+                })
+                .catch((error) => {
+                    console.error('Erro ao registrar o Service Worker:', error);
+                });
+        };
+    </script>
+{% endblock %}
