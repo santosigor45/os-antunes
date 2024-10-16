@@ -66,11 +66,16 @@ function setupFormListeners() {
             var url = '/process_form/send'
 
             sendDataToServer(url, formData, form.getAttribute('method'))
-                .then(({ message, type }) => {
+                .then(({ message, type, pdf_link }) => {
                     limparFormulario(formId);
                     showHiddenDiv(['container-destino'], ['add']);
                     exibirMensagemFlash(message, type);
-                    console.log(message);
+                    const printWindow = window.open(pdf_link);
+
+                    printWindow.onload = function() {
+                        printWindow.focus();
+                        printWindow.print();
+                    };
                 })
                 .catch(error => {
                     exibirMensagemFlash('Houve um erro. Por favor tente novamente.', 'info');

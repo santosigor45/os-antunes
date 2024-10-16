@@ -1,7 +1,7 @@
 from flask import request, jsonify
 from flask_login import current_user
+from ext.configuration import URL, URL_PDF, HEADERS
 import requests
-import os
 
 
 def send_form():
@@ -23,14 +23,14 @@ def send_form():
                 }
             ]
         }
-        url = os.environ.get('URL')
-        headers = {'Content-Type': 'application/json',
-                   'access-token': os.environ.get('ACCESS_TOKEN'),
-                   'secret-access-token': os.environ.get('SECRET_ACCESS_TOKEN')}
 
-        response = requests.post(url, json=collected_data, headers=headers)
+        response = requests.post(URL, json=collected_data, headers=HEADERS)
         if response.status_code == 200:
-            return jsonify({'type': 'success', 'message': message})
+            returned_data = response.json()
+            os_code = returned_data.get("data").get("codigo")
+            os_hash = requests.get(URL + "?codigo=" + os_code, headers=HEADERS).json()
+            pdf_link = URL_PDF + os_hash.get("data", [])[0].get("hash")
+            return jsonify({'type': 'success', 'message': message, 'pdf_link': pdf_link})
         else:
             return jsonify({'type': 'error', 'message': response.status_code})
 

@@ -1,5 +1,11 @@
 import os
 
+URL = os.environ.get('URL')
+URL_PDF = os.environ.get('URL_PDF')
+HEADERS = {'Content-Type': 'application/json',
+           'access-token': os.environ.get('ACCESS_TOKEN'),
+           'secret-access-token': os.environ.get('SECRET_ACCESS_TOKEN')}
+
 
 # Fetch environment variables to configure the application settings
 def init_app(app):
