@@ -1,7 +1,7 @@
 {
-  "name": "Portaria Antunes",
-  "short_name": "Portaria Antunes",
-  "description": "Um pequeno aplicativo para auxiliar a portaria da empresa Antunes & Antunes Transporte Escolar.",
+  "name": "OS Antunes",
+  "short_name": "OS Antunes",
+  "description": "Um pequeno aplicativo para auxiliar no cadastro de OS da empresa Antunes & Antunes Transporte Escolar.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
