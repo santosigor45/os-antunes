@@ -32,7 +32,7 @@ def send_form():
             pdf_link = URL_PDF + os_hash.get("data", [])[0].get("hash")
             return jsonify({'type': 'success', 'message': message, 'pdf_link': pdf_link})
         else:
-            return jsonify({'type': 'error', 'message': response.status_code})
+            return jsonify({'type': 'error', 'message': f"Error {response.status_code}: {response.reason}})
 
     except Exception as e:
         return jsonify({'type': 'error', 'message': 'function error:' + str(e)})
