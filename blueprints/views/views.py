@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, send_from_directory
 from flask_login import current_user
-from models import Placas
+from models import Placas, Cidades, Motoristas
 
 
 def home():
@@ -12,7 +12,9 @@ def home():
 
 def cadastrar_os():
     placas = [row.to_dict() for row in Placas.query]
-    return render_template("cadastrar_os.html", placas=placas)
+    cidades = [cidade for cidade in Cidades.query.all()]
+    motoristas = [motorista for motorista in Motoristas.query.all()]
+    return render_template("cadastrar_os.html", placas=placas, cidades=cidades, motoristas=motoristas)
 
 
 def pesquisar():

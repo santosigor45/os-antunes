@@ -15,10 +15,10 @@
             <label>Categoria</label>
             <div class="button-container">
                 <input type="radio" class="btn-check" name="categoria" id="interna" value="interna" autocomplete="off" required/>
-                <label class="btn btn-secondary label-interna" for="interna" style="margin-right: 5px;" onclick="showHiddenDiv(['container-destino'], ['add']);">Interna</label>
+                <label class="btn btn-secondary label-interna" for="interna" style="margin-right: 5px;" onclick="showHiddenDiv(['container-fornecedor'], ['add']);">Interna</label>
 
                 <input type="radio" class="btn-check" name="categoria" id="externa" value="externa" autocomplete="off"/>
-                <label class="btn btn-secondary label-externa" for="externa" onclick="showHiddenDiv(['container-destino'], ['remove']);">Externa</label>
+                <label class="btn btn-secondary label-externa" for="externa" onclick="showHiddenDiv(['container-fornecedor'], ['remove']);">Externa</label>
             </div>
             <div class="form-group" style="display: flex;">
                 <div class="form-group">
@@ -46,6 +46,24 @@
                 <input class="form-control" id="descricao" name="descricao">
             </div>
             <div class="form-group">
+                <label for="motorista">Motorista</label>
+                <input type="text" class="form-control" id="motorista" name="motorista" required>
+                <div id="motoristaOptions" class="dynamic-options">
+                    {% for motorista in motoristas %}
+                        <div class="dynamic-option">{{ motorista.motorista }} <b>| {{ motorista.cidade }}</b></div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="cidade">Cidade</label>
+                <select name="cidade" id="cidade" class="form-control" required>
+                    <option disabled selected value="">Selecione a cidade do veículo</option>
+                    {% for cidade in cidades %}
+                        <option>{{ cidade.cidade }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="defeito">Defeito</label>
                 <input type="text" class="form-control" id="defeito" name="defeito" required>
             </div>
@@ -53,9 +71,20 @@
                 <label for="solucao">Solução</label>
                 <input type="text" class="form-control" id="solucao" name="solucao" required>
             </div>
-            <div class="form-group hidden" id="container-destino">
-                <label>Destino</label>
-                <input type="text" class="form-control destino" id="destino" name="destino">
+            <div class="form-group">
+                <label for="prioridade">Prioridade</label>
+                <select name="prioridade" id="prioridade" class="form-control" required>
+                    <option disabled selected value="">Selecione a prioridade</option>
+                    <option value="0">Baixa</option>
+                    <option value="1">Média</option>
+                    <option value="2">Alta</option>
+                    <option value="3">Urgente</option>
+                    <option value="4">Muito Urgente</option>
+                </select>
+            </div>
+            <div class="form-group hidden" id="container-fornecedor">
+                <label>Fornecedor</label>
+                <input type="text" class="form-control" id="fornecedor" name="fornecedor">
             </div>
             <div class="button-container" style="margin: 0; flex-wrap: nowrap;">
                 <button type="button" class="btn btn-danger btn-lg" id="limpar" onclick="confirmarLimpeza('cadastrar_os');showHiddenDiv(['container-destino'], ['add']);">Limpar</button>

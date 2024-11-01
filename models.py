@@ -17,6 +17,23 @@ class Placas(db.Model):
         return f'<Placa id={self.id} placa={self.placa}>'
 
 
+class Motoristas(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    motorista = db.Column(db.String(50), nullable=False)
+    cidade = db.Column(db.String(30))
+
+    def __repr__(self):
+        return f'<Motorista id={self.id} motorista={self.motorista}>'
+
+
+class Cidades(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    cidade = db.Column(db.String(30), nullable=False)
+
+    def __repr__(self):
+        return f'<Cidade id={self.id} cidade={self.cidade}>'
+
+
 class User(db.Model, UserMixin):
     __tablename__ = "posto_users"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)

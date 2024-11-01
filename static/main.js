@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function () {
     exibirModal();
     exibirMensagemPersonalizada();
     setupFormListeners();
+    setupPlacaInput();
+    setupMotoristaInput();
 });
 
 // Add focus event listeners to all input fields to ensure they scroll into view.
@@ -62,25 +64,46 @@ function setupFormListeners() {
         form.addEventListener('submit', function (event) {
             event.preventDefault();
             var formData = new FormData(this);
-            var formId = form.getAttribute('id')
-            var url = '/process_form/send'
+            var formId = form.getAttribute('id');
+            var url = '/process_form/send';
 
-            sendDataToServer(url, formData, form.getAttribute('method'))
-                .then(({ message, type, pdf_link }) => {
-                    limparFormulario(formId);
-                    showHiddenDiv(['container-destino'], ['add']);
-                    exibirMensagemFlash(message, type);
-                    const printWindow = window.open(pdf_link);
+            // Envia o formulário e lida com a resposta como um PDF combinado
+            fetch(url, {
+                method: form.getAttribute('method'),
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao processar o formulário.');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                // Limpar o formulário e exibir mensagens de sucesso
+                limparFormulario(formId);
+                showHiddenDiv(['container-fornecedor'], ['add']);
+                exibirMensagemFlash('Formulário enviado com sucesso!', 'success');
 
-                    printWindow.onload = function() {
-                        printWindow.focus();
-                        printWindow.print();
-                    };
-                })
-                .catch(error => {
-                    exibirMensagemFlash('Houve um erro. Por favor tente novamente.', 'info');
-                    console.log(error);
-                });
+                // Cria uma URL temporária para o blob do PDF
+                const pdfUrl = URL.createObjectURL(blob);
+
+                // Abre o PDF em uma nova janela para impressão
+                const printWindow = window.open(pdfUrl);
+
+                printWindow.onload = function() {
+                    printWindow.focus();
+                    printWindow.print();
+                };
+
+                // Libera a URL do blob após o uso
+                printWindow.onafterprint = function() {
+                    URL.revokeObjectURL(pdfUrl);
+                };
+            })
+            .catch(error => {
+                exibirMensagemFlash('Houve um erro. Por favor tente novamente.', 'info');
+                console.error(error);
+            });
         });
     });
 }
@@ -138,6 +161,30 @@ function setupPlacaOptions(field) {
     });
 }
 
+function setupMotoristaInput() {
+    var motorista = document.getElementById('motorista');
+    var motoristaOptions = document.getElementById('motoristaOptions');
+
+    if (!motoristaOptions) {
+        return
+    }
+
+    var all_motoristas = Array.from(motoristaOptions.children);
+
+    motorista.addEventListener('input', function() {
+        motorista.value = motorista.value.toUpperCase().replace(/[0-9]/g, '');
+        var valorAtual = motorista.value;
+        motoristaOptions.innerHTML = '';
+
+        filterAndDisplayOptions(valorAtual, all_motoristas, motorista, motoristaOptions);
+    });
+
+    motorista.addEventListener('blur', function() {
+        setTimeout(function() {
+            motoristaOptions.classList.remove('show');
+        }, 300);
+    });
+}
 
 // setup the field "Placa" to correspond to a specific pattern
 function setupPlacaPattern(field) {
