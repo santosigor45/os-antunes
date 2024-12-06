@@ -69,7 +69,7 @@ def send_form():
 
                 elementos_para_remover = [
                     'dados-pagamento',
-                    None if fornecedor_string else 'dados-cliente',
+                    "" if fornecedor_string else 'dados-cliente',
                     'valor-total',
                 ]
 
