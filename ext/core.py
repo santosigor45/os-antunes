@@ -29,13 +29,14 @@ def send_form():
 
         fornecedor_string = f"FORNECEDOR: {fornecedor}" if fornecedor else ""
         motorista_string = f"MOTORISTA: {motorista}" if motorista else ""
+        prioridade = request.form.get("prioridade")
 
         collected_data = {
             "cliente_id": "39134045",
             "nome_vendedor": current_user.username.upper(),
             "data_entrada": request.form.get("data"),
             "horario": request.form.get("hora"),
-            "prioridade": prioridades[request.form.get("prioridade")],
+            "prioridade": prioridades[prioridade],
             "situacao_id": "6909262",
             "centro_custo_id": cidades[request.form.get("cidade")],
             "observacoes": f"{fornecedor_string}\n{motorista_string}",
@@ -79,7 +80,7 @@ def send_form():
                 numero_pedido = soup.find('h2', class_='numero-pedido')
                 if numero_pedido:
                     texto_existente = numero_pedido.get_text(strip=True)
-                    texto_adicional = f" - {request.form.get("prioridade")}"
+                    texto_adicional = f" - {prioridade}"
                     numero_pedido.string = f"{texto_existente}{texto_adicional}"
 
                     # **Adicionar uma tabela em branco na segunda página**
