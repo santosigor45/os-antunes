@@ -1,7 +1,7 @@
 import os
 
 URL = os.environ.get('URL')
-URL_PDF = os.environ.get('URL_PDF')
+URL_OS = os.environ.get('URL_OS')
 HEADERS = {'Content-Type': 'application/json',
            'access-token': os.environ.get('ACCESS_TOKEN'),
            'secret-access-token': os.environ.get('SECRET_ACCESS_TOKEN')}

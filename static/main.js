@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setupFormListeners();
     setupPlacaInput();
     setupMotoristaInput();
+    verificarPlaca()
 });
 
 // Add focus event listeners to all input fields to ensure they scroll into view.
@@ -67,7 +68,7 @@ function setupFormListeners() {
             var formId = form.getAttribute('id');
             var url = '/process_form/send';
 
-            // Envia o formulário e lida com a resposta como um PDF combinado
+            // Envia o formulário e lida com a resposta como HTML
             fetch(url, {
                 method: form.getAttribute('method'),
                 body: formData
@@ -76,32 +77,43 @@ function setupFormListeners() {
                 if (!response.ok) {
                     throw new Error('Erro ao processar o formulário.');
                 }
-                return response.blob();
+                return response.json();
             })
-            .then(blob => {
-                // Limpar o formulário e exibir mensagens de sucesso
-                limparFormulario(formId);
-                showHiddenDiv(['container-fornecedor'], ['add']);
-                exibirMensagemFlash('Formulário enviado com sucesso!', 'success');
+            .then(data => {
+                if (data.type === 'success') {
+                    // Limpar o formulário e exibir mensagens de sucesso
+                    limparFormulario(formId);
+                    showHiddenDiv(['container-fornecedor'], ['add']);
+                    exibirMensagemFlash(data.message, 'success');
 
-                // Cria uma URL temporária para o blob do PDF
-                const pdfUrl = URL.createObjectURL(blob);
+                    // Abrir uma nova janela e inserir o HTML retornado
+                    const printWindow = window.open('', '_blank');
 
-                // Abre o PDF em uma nova janela para impressão
-                const printWindow = window.open(pdfUrl);
+                    if (printWindow) {
+                        printWindow.document.open();
+                        printWindow.document.write(data.html);
+                        printWindow.document.close();
 
-                printWindow.onload = function() {
-                    printWindow.focus();
-                    printWindow.print();
-                };
+                        // Aguarda o conteúdo carregar antes de imprimir
+                        printWindow.onload = function() {
+                            printWindow.focus();
+                            printWindow.print();
 
-                // Libera a URL do blob após o uso
-                printWindow.onafterprint = function() {
-                    URL.revokeObjectURL(pdfUrl);
-                };
+                            // Opcional: Fechar a janela após a impressão
+                            printWindow.onafterprint = function() {
+                                printWindow.close();
+                            };
+                        };
+                    } else {
+                        exibirMensagemFlash('Não foi possível abrir a janela de impressão.', 'error');
+                    }
+                } else {
+                    // Exibir mensagem de erro
+                    exibirMensagemFlash(data.message, 'error');
+                }
             })
             .catch(error => {
-                exibirMensagemFlash('Houve um erro. Por favor tente novamente.', 'info');
+                exibirMensagemFlash('Houve um erro. Por favor, tente novamente.', 'info');
                 console.error(error);
             });
         });
@@ -124,6 +136,25 @@ function sendDataToServer(url, formData, method) {
     } else {
         return fetch(url, { method: method, body: formData }).then(response => response.json());
     };
+}
+
+// Validates and formats the vehicle plate input.
+function verificarPlaca() {
+    var placaElement = document.getElementById("placa");
+    var kmElement = document.getElementById("quilometragem");
+    if (placaElement.value == "SEM-PLACA") {
+        placaElement.removeAttribute('pattern');
+        placaElement.maxLength = "9"
+        kmElement.required = false;
+        document.getElementById("div-descricao").style.display = "block";
+        document.getElementById("descricao").required = true;
+    } else {
+        placaElement.pattern = "[A-Z]{3}-\\d[A-j0-9]\\d{2}"
+        placaElement.maxLength = "8"
+        kmElement.required = true;
+        document.getElementById("div-descricao").style.display = "none";
+        document.getElementById("descricao").required = false;
+    }
 }
 
 function setupPlacaInput(field = 'placa') {
