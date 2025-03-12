@@ -97,12 +97,9 @@ function setupFormListeners() {
                         printWindow.onload = function() {
                             printWindow.focus();
                             printWindow.print();
-
-                            // Opcional: Fechar a janela após a impressão
-                            printWindow.onafterprint = function() {
-                                printWindow.close();
-                            };
                         };
+
+                        printWindow.document.close();
                     } else {
                         exibirMensagemFlash('Não foi possível abrir a janela de impressão.', 'error');
                     }
