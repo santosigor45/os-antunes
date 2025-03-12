@@ -107,7 +107,6 @@ function setupFormListeners() {
                                 };
                             }
                         }, 500); // Verifica a cada 500ms
-                    }
                     } else {
                         exibirMensagemFlash('Não foi possível abrir a janela de impressão.', 'error');
                     }
