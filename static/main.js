@@ -92,18 +92,22 @@ function setupFormListeners() {
                     if (printWindow) {
                         printWindow.document.open();
                         printWindow.document.write(data.html);
-
-                        // Aguarda o conteúdo carregar antes de imprimir
-                        printWindow.onload = function() {
-                            printWindow.focus();
-                            printWindow.print();
-
-                            // Opcional: Fechar a janela após a impressão
-                            printWindow.onafterprint = function() {
-                                printWindow.close();
-                            };
-                        };
                         printWindow.document.close();
+
+                        // Verifica continuamente até que o documento esteja pronto
+                        let checkReadyState = setInterval(function () {
+                            if (printWindow.document.readyState === 'complete') {
+                                clearInterval(checkReadyState);
+                                printWindow.focus();
+                                printWindow.print();
+
+                                // Opcional: Fechar a janela após a impressão
+                                printWindow.onafterprint = function () {
+                                    printWindow.close();
+                                };
+                            }
+                        }, 500); // Verifica a cada 500ms
+                    }
                     } else {
                         exibirMensagemFlash('Não foi possível abrir a janela de impressão.', 'error');
                     }
