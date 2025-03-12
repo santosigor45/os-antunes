@@ -92,14 +92,13 @@ function setupFormListeners() {
                     if (printWindow) {
                         printWindow.document.open();
                         printWindow.document.write(data.html);
+                        printWindow.document.close();
 
                         // Aguarda o conteúdo carregar antes de imprimir
-                        printWindow.onload = function() {
+                        setTimeout(() => {
                             printWindow.focus();
                             printWindow.print();
-                        };
-
-                        printWindow.document.close();
+                        }, 500);
                     } else {
                         exibirMensagemFlash('Não foi possível abrir a janela de impressão.', 'error');
                     }
